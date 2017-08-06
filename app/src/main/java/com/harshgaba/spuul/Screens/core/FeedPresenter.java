@@ -41,7 +41,7 @@ public class FeedPresenter {
     public void onCreate() {
 
         Log.d("enter to presenter", "oki");
-        compositeSubscription.add(getAllList());
+        compositeSubscription.add(getFeeds());
 //        subscriptions.add(respondToClick());
     }
 
@@ -56,7 +56,7 @@ public class FeedPresenter {
 //    }
 
 
-    private Subscription getAllList() {
+    private Subscription getFeeds() {
         return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
             if (!networkAvailable) {
                 Log.d("no conn", "no connexion");
@@ -103,6 +103,7 @@ public class FeedPresenter {
             @Override
             public ArrayList<FeedData> call(List<Pick> picks, List<Video> videos) {
                 if (picks != null && picks.size() > 0 && videos != null && videos.size() > 0) {
+
 
                 }
                 Log.e("pick and videos size ", picks.size() + " " + videos.size());
