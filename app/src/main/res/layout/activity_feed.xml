@@ -7,10 +7,7 @@
     android:orientation="vertical"
     tools:context="com.harshgaba.spuul.Screens.FeedActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_banner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/banner_height" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_movies"

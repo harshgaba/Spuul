@@ -35,7 +35,7 @@ public class FeedModel {
         return spuulApi.getPicksData();
     }
 
-    Observable<Banner> provideListBanner() {
+    Observable<List<Banner>> provideListBanner() {
         return spuulApi.getBannerData();
     }
 

@@ -16,7 +16,7 @@ import rx.Observable;
 public interface SpuulApi {
 
     @GET("/banner")
-    Observable<Banner> getBannerData();
+    Observable<List<Banner>> getBannerData();
 
     @GET("picks")
     Observable<List<Pick>> getPicksData();

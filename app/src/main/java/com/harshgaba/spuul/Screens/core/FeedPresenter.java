@@ -1,16 +1,24 @@
 package com.harshgaba.spuul.Screens.core;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.harshgaba.spuul.R;
 import com.harshgaba.spuul.models.FeedData;
+import com.harshgaba.spuul.models.banner.Banner;
 import com.harshgaba.spuul.models.picks.Pick;
 import com.harshgaba.spuul.models.videos.Video;
 import com.harshgaba.spuul.utils.RxSchedulers;
 import com.harshgaba.spuul.utils.UiUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import rx.Observable;
 import rx.Subscription;
@@ -42,11 +50,13 @@ public class FeedPresenter {
 
         Log.d("enter to presenter", "oki");
         compositeSubscription.add(getFeeds());
+//        compositeSubscription.add(getBannersList());
 //        subscriptions.add(respondToClick());
     }
 
     public void onDestroy() {
         compositeSubscription.clear();
+        Log.e("allsubscriptionsclrea","yes");
     }
 
 
@@ -63,16 +73,17 @@ public class FeedPresenter {
 
             }
         }).filter(isNetworkAvailable -> true).flatMap(isAvailable -> getFeedDataList()).subscribeOn(rxSchedulers.internet())
-                .observeOn(rxSchedulers.androidThread()).subscribe(feedData -> {
+                .observeOn(rxSchedulers.androidThread()).subscribe(feedDatas -> {
                     Log.d("ok loaded", "cccc");
 
+                    feedView.swapAdapter(feedDatas);
                 }, throwable -> {
                     Log.d("ok loaded", "exception " + throwable.getMessage());
 
                 });
     }
 
-    private Subscription getHeroesList() {
+    private Subscription getBannersList() {
 
 
         return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
@@ -83,13 +94,13 @@ public class FeedPresenter {
             }
         }).
                 filter(isNetworkAvailable -> true).
-                flatMap(isAvailable -> feedModel.provideListCategory()).
+                flatMap(isAvailable -> feedModel.provideListBanner()).
                 subscribeOn(rxSchedulers.internet()).
-                observeOn(rxSchedulers.runOnBackground()).subscribe(picks -> {
+                observeOn(rxSchedulers.runOnBackground()).subscribe(banners -> {
                     Log.d("ok loaded", "cccc");
-                    Log.e("ok loaded", picks.size() + "");
+                    Log.e("ok loadedbanner", banners.size() + "");
 
-//                    feedView.swapAdapter((List<Pick>) picks);
+                    feedView.swapBannerAdapter(banners);
 //                    picks = (ArrayList<Pick>) heroes.getElements();
                 }, throwable -> {
                     UiUtils.handleThrowable(throwable);
@@ -102,16 +113,39 @@ public class FeedPresenter {
         return Observable.zip(feedModel.provideListCategory(), feedModel.provideListVideos(), new Func2<List<Pick>, List<Video>, ArrayList<FeedData>>() {
             @Override
             public ArrayList<FeedData> call(List<Pick> picks, List<Video> videos) {
-                if (picks != null && picks.size() > 0 && videos != null && videos.size() > 0) {
-
-
-                }
-                Log.e("pick and videos size ", picks.size() + " " + videos.size());
-
-                FeedData feedData = new FeedData(picks.get(0), videos);
                 ArrayList<FeedData> feedDataArrayList = new ArrayList<FeedData>();
-                feedDataArrayList.add(feedData);
+
+
+                Map<Integer, ArrayList<Video>> map = new HashMap<Integer, ArrayList<Video>>();
+                if (picks != null && picks.size() > 0 && videos != null && videos.size() > 0) {
+                    for (Video video : videos) {
+                        int categoryId = video.getCategoryId();
+                        for (Pick pick : picks) {
+                            if (categoryId == pick.getId()) {
+                                ArrayList<Video> temp = new ArrayList<Video>();
+                                if (map.containsKey(categoryId)) {
+                                    temp.addAll(map.get(categoryId));
+                                    temp.add(video);
+                                    map.put(categoryId, temp);
+                                } else {
+                                    temp.add(video);
+                                    map.put(categoryId, temp);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    Log.e("pick and videos size ", picks.size() + " " + videos.size());
+                    for (Pick pick : picks) {
+                        if (map.containsKey(pick.getId())) {
+                            FeedData feedData = new FeedData(pick, map.get(pick.getId()));
+                            feedDataArrayList.add(feedData);
+                        }
+                    }
+                }
+                Log.e("feedDatas size", feedDataArrayList.size() + "");
                 return feedDataArrayList;
+
             }
         });
     }
