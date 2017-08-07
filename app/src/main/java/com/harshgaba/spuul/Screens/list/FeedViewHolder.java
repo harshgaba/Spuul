@@ -2,6 +2,8 @@ package com.harshgaba.spuul.Screens.list;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -14,9 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.harshgaba.spuul.R;
 import com.harshgaba.spuul.models.FeedData;
 import com.harshgaba.spuul.models.videos.Video;
+import com.harshgaba.spuul.utils.UiUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +41,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     LinearLayout layoutMovies;
 
 
-
     public FeedViewHolder(View itemView) {
         super(itemView);
         this.view = itemView;
@@ -50,7 +55,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                 nameCategoryMovie.setText(feedData.getPick().getTitle());
             }
 
-            if (layoutMovies.getChildCount()>0){
+            if (layoutMovies.getChildCount() > 0) {
                 layoutMovies.removeAllViews();
             }
             for (int i = 0; i < feedData.getVideos().size(); i++) {
@@ -65,7 +70,20 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                 titleMovie.setText(feedData.getVideos().get(i).getTitle());
                 ImageView imageMovie = (ImageView) v.findViewById(R.id.imageview_movie);
                 if (feedData.getVideos().get(i).getCover() != null) {
-                    Glide.with(view.getContext()).load(feedData.getVideos().get(i).getCover().getSmall().trim().replace("https", "http")).fitCenter().into(imageMovie);
+                    Drawable mDefaultBackground = ContextCompat.getDrawable(view.getContext(), R.drawable.loading_error_vector);
+
+                    Glide.with(view.getContext()).load(feedData.getVideos().get(i).getCover().getSmall().trim().replace("https", "http")).listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            UiUtils.handleThrowable(e);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            return false;
+                        }
+                    }).fitCenter().error(mDefaultBackground).into(imageMovie);
                 }
                 final int[] displayHeight = {0};
                 layoutMovies.post(new Runnable() {
