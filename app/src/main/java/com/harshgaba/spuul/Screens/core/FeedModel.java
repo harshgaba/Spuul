@@ -27,12 +27,10 @@ public class FeedModel {
     }
 
 
-    Observable<List<Video>> provideListVideos() {
-        return spuulApi.getVideosData();
-    }
 
-    Observable<List<Video>> provideListVideos(int item) {
-        return spuulApi.getVideosData();
+    Observable<List<Video>> provideListVideos(int id) {
+        //// TODO: 07/08/17 here not using the id from parameters just for mocking purpose..
+        return spuulApi.getVideosData("id");
     }
 
     Observable<List<Pick>> provideListCategory() {
@@ -48,9 +46,6 @@ public class FeedModel {
     }
 
 
-//    public void gotoHeroDetailsActivity(Hero hero) {
-//        context.goToHeroDetailsActivity(hero);
-//    }
 
 
 }

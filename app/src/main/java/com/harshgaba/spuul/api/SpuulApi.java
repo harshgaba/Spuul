@@ -7,6 +7,7 @@ import com.harshgaba.spuul.models.videos.Video;
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -15,14 +16,13 @@ import rx.Observable;
 
 public interface SpuulApi {
 
-    @GET("/banner")
+    @GET("banner")
     Observable<List<Banner>> getBannerData();
 
     @GET("picks")
     Observable<List<Pick>> getPicksData();
 
-    @GET("videos")
-    Observable<List<Video>> getVideosData();
-    @GET("videos")
-    Observable<List<Video>> getVideosData(Pick item);
+
+    @GET("picks/{id}/videos")
+    Observable<List<Video>> getVideosData(@Path("id") String id);
 }

@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.harshgaba.spuul.R;
-import com.harshgaba.spuul.Screens.list.categorized_list.FeedCategorizeMoviesAdapter;
 import com.harshgaba.spuul.models.FeedData;
 import com.harshgaba.spuul.models.videos.Video;
 
@@ -35,7 +34,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.linearlayout_movies)
     LinearLayout layoutMovies;
 
-//    private FeedCategorizeMoviesAdapter feedCategorizeMoviesAdapter;
 
 
     public FeedViewHolder(View itemView) {
