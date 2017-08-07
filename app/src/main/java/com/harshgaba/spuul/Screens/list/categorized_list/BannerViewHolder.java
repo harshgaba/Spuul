@@ -42,13 +42,14 @@ public class BannerViewHolder extends RecyclerView.ViewHolder {
     public void bind(Context context) {
 
         this.context=context;
+//        this.bannerPagerAdapter = new BannerPagerAdapter(context,null);
+//        sliderBanner.setAdapter(this.bannerPagerAdapter);
+
     }
 
     public void swapAdapter(List<Banner> banners) {
         Log.e("feedDatasbanner", banners.size() + "view holder banner");
-        this.bannerPagerAdapter = new BannerPagerAdapter(context);
-        sliderBanner.setAdapter(this.bannerPagerAdapter);
-        this.bannerPagerAdapter.swapAdapter(banners);
+//        this.bannerPagerAdapter.swapAdapter(banners);
     }
 
 }

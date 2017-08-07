@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -38,6 +40,9 @@ public class FeedPresenter {
     RxSchedulers rxSchedulers;
     CompositeSubscription compositeSubscription;
     ArrayList<Pick> picks = new ArrayList<>();
+    int count = 0;
+    ArrayList<FeedData> feedDatas = new ArrayList<>();
+
 
     public FeedPresenter(RxSchedulers schedulers, FeedModel feedModel, FeedView feedView, CompositeSubscription compositeSubscription) {
         this.rxSchedulers = schedulers;
@@ -49,22 +54,39 @@ public class FeedPresenter {
     public void onCreate() {
 
         Log.d("enter to presenter", "oki");
-        compositeSubscription.add(getFeeds());
-//        compositeSubscription.add(getBannersList());
-//        subscriptions.add(respondToClick());
+//        compositeSubscription.add(getFeeds());
+        compositeSubscription.add(getBannersList());
+        compositeSubscription.add(here());
+//        here();
     }
 
     public void onDestroy() {
         compositeSubscription.clear();
-        Log.e("allsubscriptionsclrea","yes");
+        Log.e("allsubscriptionsclrea", "yes");
     }
 
 
-//    private Subscription respondToClick() {
-//
-////        return view.itemClicks().subscribe(integer -> model.gotoHeroDetailsActivity(heros.get(integer)));
-//    }
+    private void hereSavePicks(List<Pick> picks) {
 
+        Log.e("hereSavePicks", picks.size() + "  ");
+        this.picks.addAll(picks);
+    }
+
+    private Subscription here() {
+        return feedModel.provideListCategory().subscribeOn(rxSchedulers.internet()).doOnNext(this::hereSavePicks).flatMapIterable(item -> item)
+                .flatMap(item -> feedModel.provideListVideos(item.getId())).observeOn(rxSchedulers.androidThread()).doOnCompleted(() -> {
+                    Log.e("herewehaveresult", "hereitcompleted" + "");
+
+                    feedView.swapAdapter(this.feedDatas);
+                }).
+                        subscribe(videos -> {
+                            Log.e("herewehaveresult", videos.size() + "");
+                            FeedData feedData = new FeedData(picks.get(count), videos);
+                            this.feedDatas.add(feedData);
+                            count++;
+                        });
+
+    }
 
     private Subscription getFeeds() {
         return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
@@ -89,25 +111,23 @@ public class FeedPresenter {
         return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
             if (!networkAvailable) {
                 Log.d("no conn", "no connexion");
-                // UiUtils.showSnackbar();
-                // Show Snackbar can't use app
             }
         }).
                 filter(isNetworkAvailable -> true).
                 flatMap(isAvailable -> feedModel.provideListBanner()).
                 subscribeOn(rxSchedulers.internet()).
-                observeOn(rxSchedulers.runOnBackground()).subscribe(banners -> {
+                observeOn(rxSchedulers.androidThread()).subscribe(banners -> {
                     Log.d("ok loaded", "cccc");
                     Log.e("ok loadedbanner", banners.size() + "");
 
                     feedView.swapBannerAdapter(banners);
-//                    picks = (ArrayList<Pick>) heroes.getElements();
                 }, throwable -> {
                     UiUtils.handleThrowable(throwable);
                 }
         );
 
     }
+
 
     private Observable<ArrayList<FeedData>> getFeedDataList() {
         return Observable.zip(feedModel.provideListCategory(), feedModel.provideListVideos(), new Func2<List<Pick>, List<Video>, ArrayList<FeedData>>() {

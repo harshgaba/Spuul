@@ -23,4 +23,6 @@ public interface SpuulApi {
 
     @GET("videos")
     Observable<List<Video>> getVideosData();
+    @GET("videos")
+    Observable<List<Video>> getVideosData(Pick item);
 }

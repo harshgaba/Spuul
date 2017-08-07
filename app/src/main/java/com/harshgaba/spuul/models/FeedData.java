@@ -11,12 +11,14 @@ import java.util.List;
  */
 
 public class FeedData {
-   private Pick pick;
+    private Pick pick;
     private ArrayList<Video> videos;
 
-    public FeedData(Pick pick, ArrayList<Video> videos) {
+    public FeedData(Pick pick, List<Video> videos) {
         this.pick = pick;
-        this.videos = videos;
+
+        this.videos=new ArrayList<>();
+        this.videos.addAll(videos);
     }
 
     public Pick getPick() {

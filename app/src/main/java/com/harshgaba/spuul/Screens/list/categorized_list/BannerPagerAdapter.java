@@ -21,19 +21,25 @@ public class BannerPagerAdapter extends PagerAdapter {
 
     Context mContext;
     LayoutInflater mLayoutInflater;
-    private ArrayList<Banner> banners;
+    private List<Banner> banners;
 
-    public BannerPagerAdapter(Context context) {
+    public BannerPagerAdapter(Context context, List<Banner> banners) {
         mContext = context;
+        this.banners = banners;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
     @Override
     public int getCount() {
-        if (banners == null)
+        if (banners == null) {
+            Log.e("hereitgo","hereitgo in zero");
             return 0;
-        return banners.size();
+        }else {
+            Log.e("hereitgo","hereitgo in "+banners.size());
+
+            return banners.size();
+        }
     }
 
     @Override
@@ -50,7 +56,7 @@ public class BannerPagerAdapter extends PagerAdapter {
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageview_banner_movie);
         Glide.with(mContext).load(banners.get(position).getImage().getMedium().trim().replace("https", "http")).fitCenter().into(imageView);
 
-        Log.e("hereistheitem",banners.get(position).getImage().getMedium().trim());
+        Log.e("hereistheitem", banners.get(position).getImage().getMedium().trim());
         container.addView(itemView);
 
         return itemView;
@@ -64,8 +70,8 @@ public class BannerPagerAdapter extends PagerAdapter {
     public void swapAdapter(List<Banner> banners) {
         this.banners = new ArrayList<>();
         this.banners.addAll(banners);
-        notifyDataSetChanged();
-        Log.e("bannerslistswap",this.banners.size()+"");
+//        notifyDataSetChanged();
+        Log.e("bannerslistswap", this.banners.size() + "");
     }
 
     @Override

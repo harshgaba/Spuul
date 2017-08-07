@@ -31,6 +31,10 @@ public class FeedModel {
         return spuulApi.getVideosData();
     }
 
+    Observable<List<Video>> provideListVideos(int item) {
+        return spuulApi.getVideosData();
+    }
+
     Observable<List<Pick>> provideListCategory() {
         return spuulApi.getPicksData();
     }

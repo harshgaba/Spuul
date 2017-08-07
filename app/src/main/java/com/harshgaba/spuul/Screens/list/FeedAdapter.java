@@ -35,7 +35,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
 
     public FeedAdapter(Context context) {
-        this.context=context;
+        this.context = context;
     }
 
     public void swapAdapter(ArrayList<FeedData> feedDatas) {
@@ -46,7 +46,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void swapBannerAdapter(List<Banner> banners) {
         Log.e("feedDatasbanner", banners.size() + "feedadater");
-        bannerViewHolder.swapAdapter(banners);
+//        bannerViewHolder.swapAdapter(banners);
 
     }
 
@@ -57,8 +57,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        if (isPositionHeader(position))
-            return TYPE_HEADER;
+//        if (isPositionHeader(position))
+//            return TYPE_HEADER;
         return TYPE_ITEM;
     }
 
@@ -67,8 +67,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         if (viewType == TYPE_HEADER) {
             //inflate your layout and pass it to view holder
+            Log.e("hereinTYPE_HEADER", "TYPE_HEADER");
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_view, parent, false);
-            return new BannerViewHolder(view);
+//            return new BannerViewHolder(view);
+return null;
         } else {
             //inflate your layout and pass it to view holder
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_list_item_view, parent, false);
@@ -78,22 +80,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (isPositionHeader(position)) {
-            bannerViewHolder = (BannerViewHolder) holder;
-            bannerViewHolder.bind(context);
-        } else {
-            FeedData hero = feedDatas.get(position-1);
+//        if (isPositionHeader(position)) {
+//            bannerViewHolder = (BannerViewHolder) holder;
+//            bannerViewHolder.bind(context);
+//        } else {
+            FeedData hero = feedDatas.get(position);
             feedViewHolder = (FeedViewHolder) holder;
             feedViewHolder.bind(hero);
-        }
+       // }
     }
 
     @Override
     public int getItemCount() {
         if (feedDatas != null && feedDatas.size() > 0) {
-            return feedDatas.size() + 1;
+            return feedDatas.size();
         } else {
-            return 1;
+            return 0;
         }
     }
 }
