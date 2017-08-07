@@ -74,22 +74,6 @@ public class FeedPresenter {
 
     }
 
-//    private Subscription getFeeds() {
-//        return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
-//            if (!networkAvailable) {
-//                Log.d("no conn", "no connexion");
-//
-//            }
-//        }).filter(isNetworkAvailable -> true).flatMap(isAvailable -> getFeedDataList()).subscribeOn(rxSchedulers.internet())
-//                .observeOn(rxSchedulers.androidThread()).subscribe(feedDatas -> {
-//                    Log.d("ok loaded", "cccc");
-//
-//                    feedView.swapAdapter(feedDatas);
-//                }, throwable -> {
-//                    Log.d("ok loaded", "exception " + throwable.getMessage());
-//
-//                });
-//    }
 
     private Subscription getBannersList() {
 
@@ -103,8 +87,6 @@ public class FeedPresenter {
                 flatMap(isAvailable -> feedModel.provideListBanner()).
                 subscribeOn(rxSchedulers.internet()).
                 observeOn(rxSchedulers.androidThread()).subscribe(banners -> {
-                    Log.d("ok loaded", "cccc");
-                    Log.e("ok loadedbanner", banners.size() + "");
 
                     feedView.swapBannerAdapter(banners);
                 }, throwable -> {
@@ -116,70 +98,4 @@ public class FeedPresenter {
     }
 
 
-//    private Observable<ArrayList<FeedData>> getFeedDataList() {
-//        return Observable.zip(feedModel.provideListCategory(), feedModel.provideListVideos(), new Func2<List<Pick>, List<Video>, ArrayList<FeedData>>() {
-//            @Override
-//            public ArrayList<FeedData> call(List<Pick> picks, List<Video> videos) {
-//                ArrayList<FeedData> feedDataArrayList = new ArrayList<FeedData>();
-//
-//
-//                Map<Integer, ArrayList<Video>> map = new HashMap<Integer, ArrayList<Video>>();
-//                if (picks != null && picks.size() > 0 && videos != null && videos.size() > 0) {
-//                    for (Video video : videos) {
-//                        int categoryId = video.getCategoryId();
-//                        for (Pick pick : picks) {
-//                            if (categoryId == pick.getId()) {
-//                                ArrayList<Video> temp = new ArrayList<Video>();
-//                                if (map.containsKey(categoryId)) {
-//                                    temp.addAll(map.get(categoryId));
-//                                    temp.add(video);
-//                                    map.put(categoryId, temp);
-//                                } else {
-//                                    temp.add(video);
-//                                    map.put(categoryId, temp);
-//                                }
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    Log.e("pick and videos size ", picks.size() + " " + videos.size());
-//                    for (Pick pick : picks) {
-//                        if (map.containsKey(pick.getId())) {
-//                            FeedData feedData = new FeedData(pick, map.get(pick.getId()));
-//                            feedDataArrayList.add(feedData);
-//                        }
-//                    }
-//                }
-//                Log.e("feedDatas size", feedDataArrayList.size() + "");
-//                return feedDataArrayList;
-//
-//            }
-//        });
-//    }
-
-//    private Subscription getVideoList() {
-//
-//
-//        return feedModel.isNetworkAvailable().doOnNext(networkAvailable -> {
-//            if (!networkAvailable) {
-//                Log.d("no conn", "no connexion");
-//                // UiUtils.showSnackbar();
-//                // Show Snackbar can't use app
-//            }
-//        }).
-//                filter(isNetworkAvailable -> true).
-//                flatMap(isAvailable -> feedModel.provideListCategory()).
-//                subscribeOn(rxSchedulers.internet()).
-//                observeOn(rxSchedulers.runOnBackground()).subscribe(picks -> {
-//                    Log.d("ok loaded", "cccc");
-//                    Log.e("ok loaded", picks.size() + "");
-//
-////                    feedView.swapAdapter((List<Pick>) picks);
-////                    picks = (ArrayList<Pick>) heroes.getElements();
-//                }, throwable -> {
-//                    UiUtils.handleThrowable(throwable);
-//                }
-//        );
-//
-//    }
 }

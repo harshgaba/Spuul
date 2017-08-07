@@ -13,8 +13,6 @@ import timber.log.Timber;
 
 public class UiUtils {
 
-
-
     public static void handleThrowable(Throwable throwable) {
         Timber.e(throwable, throwable.toString());
     }
@@ -24,12 +22,10 @@ public class UiUtils {
                 .make(view, message, Snackbar.LENGTH_LONG);
 
         snackbar.show();
-//        Snackbar.make(view, message, length).setAction("Action", null).show();
     }
 
     public static void showNetworkError(View view) {
         showSnackbar(view, view.getContext().getResources().getString(R.string.network_error));
-
     }
 
 
